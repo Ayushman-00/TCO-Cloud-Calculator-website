@@ -1,420 +1,411 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud TCO Calculator</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-
-        header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px;
-            text-align: center;
-        }
-
-        header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        header p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-
-        .content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            padding: 40px;
-        }
-
-        .input-section, .results-section {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .card {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 15px;
-            border: 2px solid #e9ecef;
-        }
-
-        .card h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #495057;
-            font-weight: 600;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            font-size: 1em;
-            transition: border-color 0.3s;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .result-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-        }
-
-        .result-card h3 {
-            font-size: 1.2em;
-            margin-bottom: 10px;
-            opacity: 0.9;
-        }
-
-        .result-card .amount {
-            font-size: 3em;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        .breakdown {
-            background: white;
-            color: #495057;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-
-        .breakdown-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .breakdown-item:last-child {
-            border-bottom: none;
-            font-weight: bold;
-            font-size: 1.1em;
-            color: #667eea;
-        }
-
-        .comparison {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .comparison-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .comparison-card h4 {
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
-        .comparison-card .value {
-            font-size: 2em;
-            font-weight: bold;
-            color: #495057;
-        }
-
-        @media (max-width: 968px) {
-            .content {
-                grid-template-columns: 1fr;
-            }
-
-            header h1 {
-                font-size: 2em;
-            }
-
-            .comparison {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .info-text {
-            font-size: 0.9em;
-            color: #6c757d;
-            margin-top: 5px;
-        }
-    </style>
+    <title>Professional Cloud TCO Calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>☁️ Cloud TCO Calculator</h1>
-            <p>Compare on-premises infrastructure costs with cloud solutions</p>
-        </header>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">Cloud<span>TCO</span></div>
+            <div class="menu-label">Saved Scenarios</div>
+            <div id="projectList" class="history-list"></div>
+            <div style="flex:1"></div>
+            <button onclick="logout()" class="btn-logout">Sign Out</button>
+        </nav>
 
-        <div class="content">
-            <div class="input-section">
-                <div class="card">
-                    <h2>On-Premises Infrastructure</h2>
-                    
-                    <div class="input-group">
-                        <label>Number of Servers</label>
-                        <input type="number" id="servers" value="10" min="1">
-                    </div>
+        <!-- Main Content -->
+        <main class="content">
+            <header>
+                <h1>Total Cost of Ownership Calculator</h1>
+                <div class="actions">
+                    <select id="currency" class="currency-select" onchange="changeCurrency()">
+                        <option value="USD">$ USD</option>
+                        <option value="INR">₹ INR</option>
+                    </select>
+                    <input type="text" id="projName" placeholder="Scenario name..." class="input-name">
+                    <button class="btn-save" onclick="triggerSave()">Save Scenario</button>
+                </div>
+            </header>
 
-                    <div class="input-group">
-                        <label>Cost per Server ($)</label>
-                        <input type="number" id="serverCost" value="5000" min="0">
-                    </div>
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="setTab(0)">Infrastructure Setup</button>
+                <button class="tab" onclick="setTab(1)">Environment & Migration</button>
+                <button class="tab" onclick="setTab(2)">Financial Analysis</button>
+            </div>
 
-                    <div class="input-group">
-                        <label>Storage (TB)</label>
-                        <input type="number" id="storage" value="50" min="0">
-                    </div>
-
-                    <div class="input-group">
-                        <label>Cost per TB ($)</label>
-                        <input type="number" id="storageCost" value="500" min="0">
-                    </div>
-
-                    <div class="input-group">
-                        <label>Network Equipment ($)</label>
-                        <input type="number" id="networkCost" value="20000" min="0">
-                    </div>
-
-                    <div class="input-group">
-                        <label>Annual Power & Cooling ($)</label>
-                        <input type="number" id="powerCost" value="15000" min="0">
-                    </div>
-
-                    <div class="input-group">
-                        <label>Annual IT Staff Cost ($)</label>
-                        <input type="number" id="staffCost" value="150000" min="0">
-                    </div>
-
-                    <div class="input-group">
-                        <label>Datacenter Space Rental ($/year)</label>
-                        <input type="number" id="spaceCost" value="30000" min="0">
-                    </div>
-
-                    <div class="input-group">
-                        <label>Annual Maintenance (% of hardware)</label>
-                        <input type="number" id="maintenancePercent" value="15" min="0" max="100">
-                    </div>
-
-                    <div class="input-group">
-                        <label>Hardware Refresh Cycle (years)</label>
-                        <input type="number" id="refreshCycle" value="5" min="1" max="10">
+            <!-- Tab Content -->
+            <div class="input-panel">
+                <!-- Tab 1: Infrastructure -->
+                <div id="tab-0" class="tab-content active">
+                    <h3>Cloud Infrastructure Configuration</h3>
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label>Cloud Region</label>
+                            <select id="region"></select>
+                            <small class="help-text">Select deployment region (affects pricing)</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Number of Servers/VMs</label>
+                            <input type="number" id="count" value="50" min="1" max="10000">
+                            <small class="help-text">Total virtual machines to migrate</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Instance Type</label>
+                            <select id="instance"></select>
+                            <small class="help-text">VM size and specifications</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Storage Type</label>
+                            <select id="storageType"></select>
+                            <small class="help-text">Performance vs cost tradeoff</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Total Storage (GB)</label>
+                            <input type="number" id="storageSize" value="5000" min="0">
+                            <small class="help-text">Total data storage needed</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Monthly Egress (GB)</label>
+                            <input type="number" id="dataTransfer" value="1000" min="0">
+                            <small class="help-text">Data transferred out monthly</small>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card">
-                    <h2>Cloud Configuration</h2>
-                    
-                    <div class="input-group">
-                        <label>Monthly Cloud Compute ($)</label>
-                        <input type="number" id="cloudCompute" value="8000" min="0">
-                        <p class="info-text">VM instances, containers, serverless costs</p>
+                <!-- Tab 2: Environment & Migration -->
+                <div id="tab-1" class="tab-content">
+                    <h3>Migration & Datacenter Configuration</h3>
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label>Migration Strategy</label>
+                            <select id="migrationType"></select>
+                            <small class="help-text">Level of effort and optimization</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Datacenter PUE</label>
+                            <input type="number" id="pue" value="1.5" step="0.1" min="1.0" max="3.0">
+                            <small class="help-text">Power Usage Effectiveness (1.0 = ideal)</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Analysis Period</label>
+                            <select id="duration">
+                                <option value="3">3 Years</option>
+                                <option value="5" selected>5 Years</option>
+                                <option value="7">7 Years</option>
+                                <option value="10">10 Years</option>
+                            </select>
+                            <small class="help-text">Planning horizon</small>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="input-group">
-                        <label>Monthly Cloud Storage ($)</label>
-                        <input type="number" id="cloudStorage" value="2000" min="0">
-                        <p class="info-text">Object storage, block storage, backup</p>
+                <!-- Tab 3: Financial Analysis -->
+                <div id="tab-2" class="tab-content">
+                    <h3>Financial Parameters</h3>
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label>Discount Rate (%)</label>
+                            <input type="number" id="discountRate" value="8" step="0.5" min="0" max="20">
+                            <small class="help-text">For NPV calculation (WACC)</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Display Currency</label>
+                            <select id="displayCurrency" onchange="updateDisplayCurrency()">
+                                <option value="USD">US Dollar ($)</option>
+                                <option value="INR">Indian Rupee (₹)</option>
+                            </select>
+                            <small class="help-text">All values shown in this currency</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Exchange Rate (INR/USD)</label>
+                            <input type="number" id="exchangeRate" value="84.50" step="0.01" min="1">
+                            <small class="help-text">Current rate: ₹84.50 per $1</small>
+                        </div>
                     </div>
-
-                    <div class="input-group">
-                        <label>Monthly Network & Data Transfer ($)</label>
-                        <input type="number" id="cloudNetwork" value="1500" min="0">
-                    </div>
-
-                    <div class="input-group">
-                        <label>Monthly Other Services ($)</label>
-                        <input type="number" id="cloudOther" value="1000" min="0">
-                        <p class="info-text">Databases, AI/ML, monitoring, etc.</p>
-                    </div>
-
-                    <div class="input-group">
-                        <label>Analysis Period (years)</label>
-                        <input type="number" id="analysisPeriod" value="5" min="1" max="10">
-                    </div>
-
-                    <button class="btn" onclick="calculate()">Calculate TCO</button>
                 </div>
             </div>
 
-            <div class="results-section">
-                <div class="result-card">
-                    <h3>Total Cost of Ownership</h3>
-                    <div class="amount" id="totalTCO">$0</div>
-                    <p id="period">Over 5 years</p>
-
-                    <div class="comparison">
-                        <div class="comparison-card">
-                            <h4>On-Premises</h4>
-                            <div class="value" id="onPremTotal">$0</div>
-                        </div>
-                        <div class="comparison-card">
-                            <h4>Cloud</h4>
-                            <div class="value" id="cloudTotal">$0</div>
-                        </div>
+            <!-- Results Section -->
+            <div class="results-area">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <h3>Total Savings</h3>
+                        <div class="value green" id="disp-savings">$0</div>
+                        <small>Over <span id="disp-years">5</span> years</small>
                     </div>
-
-                    <div class="breakdown">
-                        <h3 style="color: #667eea; margin-bottom: 15px;">Cost Breakdown</h3>
-                        <div id="breakdownContent"></div>
+                    <div class="kpi-card">
+                        <h3>Return on Investment</h3>
+                        <div class="value blue" id="disp-roi">0%</div>
+                        <small>Based on cloud investment</small>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>Net Present Value</h3>
+                        <div class="value purple" id="disp-npv">$0</div>
+                        <small>Discounted cash flows</small>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>Migration Cost</h3>
+                        <div class="value orange" id="disp-mig">$0</div>
+                        <small>One-time upfront cost</small>
                     </div>
                 </div>
 
-                <div class="card">
-                    <h2>Analysis Summary</h2>
-                    <div id="summary" style="line-height: 1.8;">
-                        <p style="color: #6c757d;">Calculate TCO to see the analysis summary</p>
+                <!-- Chart -->
+                <div class="chart-container">
+                    <canvas id="tcoChart"></canvas>
+                </div>
+
+                <!-- Cost Breakdown -->
+                <div class="breakdown-section">
+                    <h3>Annual Cost Breakdown</h3>
+                    <div class="breakdown-grid">
+                        <div class="breakdown-card">
+                            <h4>On-Premises (Year 1)</h4>
+                            <div class="breakdown-item">
+                                <span>Initial CapEx:</span>
+                                <span id="bd-capex">$0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Power:</span>
+                                <span id="bd-power">$0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Cooling:</span>
+                                <span id="bd-cooling">$0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Maintenance:</span>
+                                <span id="bd-maint">$0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Administration:</span>
+                                <span id="bd-admin">$0</span>
+                            </div>
+                        </div>
+                        <div class="breakdown-card">
+                            <h4>Cloud (Annual)</h4>
+                            <div class="breakdown-item">
+                                <span>Migration (One-time):</span>
+                                <span id="bd-migration">$0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Compute:</span>
+                                <span id="bd-compute">$0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Storage:</span>
+                                <span id="bd-storage">$0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Network:</span>
+                                <span id="bd-network">$0</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Support:</span>
+                                <span id="bd-support">$0</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <script>
-        function calculate() {
-            const servers = parseInt(document.getElementById('servers').value) || 0;
-            const serverCost = parseFloat(document.getElementById('serverCost').value) || 0;
-            const storage = parseFloat(document.getElementById('storage').value) || 0;
-            const storageCost = parseFloat(document.getElementById('storageCost').value) || 0;
-            const networkCost = parseFloat(document.getElementById('networkCost').value) || 0;
-            const powerCost = parseFloat(document.getElementById('powerCost').value) || 0;
-            const staffCost = parseFloat(document.getElementById('staffCost').value) || 0;
-            const spaceCost = parseFloat(document.getElementById('spaceCost').value) || 0;
-            const maintenancePercent = parseFloat(document.getElementById('maintenancePercent').value) || 0;
-            const refreshCycle = parseInt(document.getElementById('refreshCycle').value) || 5;
-            
-            const cloudCompute = parseFloat(document.getElementById('cloudCompute').value) || 0;
-            const cloudStorage = parseFloat(document.getElementById('cloudStorage').value) || 0;
-            const cloudNetwork = parseFloat(document.getElementById('cloudNetwork').value) || 0;
-            const cloudOther = parseFloat(document.getElementById('cloudOther').value) || 0;
-            const analysisPeriod = parseInt(document.getElementById('analysisPeriod').value) || 5;
+        let myChart;
+        let currentTab = 0;
 
-            const hardwareCost = (servers * serverCost) + (storage * storageCost) + networkCost;
-            const annualMaintenance = hardwareCost * (maintenancePercent / 100);
-            const hardwareRefreshes = Math.floor(analysisPeriod / refreshCycle);
-            const totalHardware = hardwareCost * (1 + hardwareRefreshes);
-            
-            const annualOperational = powerCost + staffCost + spaceCost + annualMaintenance;
-            const totalOperational = annualOperational * analysisPeriod;
-            
-            const onPremTotal = totalHardware + totalOperational;
+        function init() {
+            // Populate dropdowns
+            const fill = (id, data, valueKey = 'id', labelKey = 'name') => {
+                const el = document.getElementById(id);
+                el.innerHTML = '';
+                data.forEach(d => {
+                    const value = d[valueKey] || d;
+                    const label = d[labelKey] || d.name;
+                    el.innerHTML += `<option value="${value}">${label}</option>`;
+                });
+            };
 
-            const monthlyCloud = cloudCompute + cloudStorage + cloudNetwork + cloudOther;
-            const cloudTotal = monthlyCloud * 12 * analysisPeriod;
+            const regionArr = Object.keys(REGIONS).map(k => ({id: k, name: REGIONS[k].name}));
+            fill('region', regionArr);
+            fill('instance', INSTANCE_CATALOG);
+            fill('storageType', STORAGE_TIERS);
+            fill('migrationType', MIGRATION_COMPLEXITY);
 
-            const difference = onPremTotal - cloudTotal;
-            const savings = Math.abs(difference);
-            const savingsPercent = ((savings / Math.max(onPremTotal, cloudTotal)) * 100).toFixed(1);
+            // Event listeners
+            document.querySelectorAll('input, select').forEach(el => {
+                if (el.id !== 'projName' && el.id !== 'currency' && el.id !== 'displayCurrency' && el.id !== 'exchangeRate') {
+                    el.addEventListener('change', runAnalysis);
+                }
+            });
 
-            document.getElementById('totalTCO').textContent = 
-                `$${Math.min(onPremTotal, cloudTotal).toLocaleString()}`;
-            document.getElementById('period').textContent = `Over ${analysisPeriod} years`;
-            document.getElementById('onPremTotal').textContent = `$${onPremTotal.toLocaleString()}`;
-            document.getElementById('cloudTotal').textContent = `$${cloudTotal.toLocaleString()}`;
+            // Initialize chart
+            const ctx = document.getElementById('tcoChart').getContext('2d');
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { 
+                            label: 'On-Premises (Cumulative)', 
+                            data: [], 
+                            backgroundColor: 'rgba(100, 116, 139, 0.8)',
+                            borderColor: 'rgb(100, 116, 139)',
+                            borderWidth: 1
+                        },
+                        { 
+                            label: 'Cloud (Cumulative)', 
+                            data: [], 
+                            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                            borderColor: 'rgb(59, 130, 246)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
 
-            const breakdown = `
-                <div class="breakdown-item">
-                    <span>On-Prem Hardware</span>
-                    <span>$${totalHardware.toLocaleString()}</span>
-                </div>
-                <div class="breakdown-item">
-                    <span>On-Prem Operations</span>
-                    <span>$${totalOperational.toLocaleString()}</span>
-                </div>
-                <div class="breakdown-item">
-                    <span>Cloud Services</span>
-                    <span>$${cloudTotal.toLocaleString()}</span>
-                </div>
-                <div class="breakdown-item">
-                    <span>${difference > 0 ? 'Cloud Savings' : 'On-Prem Savings'}</span>
-                    <span>$${savings.toLocaleString()} (${savingsPercent}%)</span>
-                </div>
-            `;
-            document.getElementById('breakdownContent').innerHTML = breakdown;
-
-            const winner = difference > 0 ? 'Cloud' : 'On-Premises';
-            const annualOnPrem = (onPremTotal / analysisPeriod).toFixed(0);
-            const annualCloud = (cloudTotal / analysisPeriod).toFixed(0);
-            
-            const summary = `
-                <p><strong>Recommended Solution: ${winner}</strong></p>
-                <p style="margin-top: 15px;">Based on your ${analysisPeriod}-year analysis, ${winner.toLowerCase()} infrastructure would save you <strong>$${savings.toLocaleString()}</strong> (${savingsPercent}% reduction).</p>
-                
-                <p style="margin-top: 15px;"><strong>Annual Costs:</strong></p>
-                <p>• On-Premises: $${Number(annualOnPrem).toLocaleString()}/year</p>
-                <p>• Cloud: $${Number(annualCloud).toLocaleString()}/year</p>
-                
-                <p style="margin-top: 15px;"><strong>Key Considerations:</strong></p>
-                <p>• On-premises requires ${hardwareRefreshes > 0 ? hardwareRefreshes + ' hardware refresh(es)' : 'no hardware refresh'} during this period</p>
-                <p>• Cloud offers better scalability and flexibility</p>
-                <p>• On-premises provides more control and data sovereignty</p>
-            `;
-            document.getElementById('summary').innerHTML = summary;
+            checkSession().then(() => {
+                loadHistory();
+                runAnalysis();
+            });
         }
 
-        calculate();
+        function getInputs() {
+            return {
+                region: document.getElementById('region').value,
+                count: document.getElementById('count').value,
+                instance: document.getElementById('instance').value,
+                storageType: document.getElementById('storageType').value,
+                storageSize: document.getElementById('storageSize').value,
+                dataTransfer: document.getElementById('dataTransfer').value,
+                migrationType: document.getElementById('migrationType').value,
+                pue: document.getElementById('pue').value,
+                duration: document.getElementById('duration').value,
+                discountRate: document.getElementById('discountRate').value
+            };
+        }
+
+        function runAnalysis() {
+            const inputs = getInputs();
+            const res = calculateEnterpriseTCO(inputs, currentTab);
+
+            // Update KPIs
+            document.getElementById('disp-savings').innerText = formatCurrency(res.savings);
+            document.getElementById('disp-roi').innerText = res.roi.toFixed(1) + "%";
+            document.getElementById('disp-npv').innerText = formatCurrency(res.npv);
+            document.getElementById('disp-mig').innerText = formatCurrency(res.migrationCost);
+            document.getElementById('disp-years').innerText = inputs.duration;
+
+            // Update breakdown
+            document.getElementById('bd-capex').innerText = formatCurrency(res.breakdown.onPrem.capex);
+            document.getElementById('bd-power').innerText = formatCurrency(res.breakdown.onPrem.power);
+            document.getElementById('bd-cooling').innerText = formatCurrency(res.breakdown.onPrem.cooling);
+            document.getElementById('bd-maint').innerText = formatCurrency(res.breakdown.onPrem.maintenance);
+            document.getElementById('bd-admin').innerText = formatCurrency(res.breakdown.onPrem.admin);
+            
+            document.getElementById('bd-migration').innerText = formatCurrency(res.breakdown.cloud.migration);
+            document.getElementById('bd-compute').innerText = formatCurrency(res.breakdown.cloud.compute);
+            document.getElementById('bd-storage').innerText = formatCurrency(res.breakdown.cloud.storage);
+            document.getElementById('bd-network').innerText = formatCurrency(res.breakdown.cloud.network);
+            document.getElementById('bd-support').innerText = formatCurrency(res.breakdown.cloud.support);
+
+            // Update chart
+            const years = parseInt(inputs.duration);
+            myChart.data.labels = Array.from({length: years}, (_, i) => `Year ${i+1}`);
+            
+            let runningOnPrem = res.breakdown.onPrem.capex;
+            let runningCloud = res.migrationCost;
+            
+            myChart.data.datasets[0].data = res.onPremCashFlow.map(c => {
+                runningOnPrem += c;
+                return runningOnPrem;
+            });
+            
+            myChart.data.datasets[1].data = res.cloudCashFlow.map(c => {
+                runningCloud += c;
+                return runningCloud;
+            });
+            
+            myChart.update();
+        }
+
+        function setTab(idx) {
+            currentTab = idx;
+            document.querySelectorAll('.tab').forEach((t, i) => {
+                t.classList.toggle('active', i === idx);
+            });
+            document.querySelectorAll('.tab-content').forEach((c, i) => {
+                c.classList.toggle('active', i === idx);
+            });
+            
+            // Recalculate when switching tabs
+            runAnalysis();
+        }
+
+        function loadState(data) {
+            for (const [k, v] of Object.entries(data)) {
+                const el = document.getElementById(k);
+                if (el) el.value = v;
+            }
+            runAnalysis();
+        }
+
+        function triggerSave() {
+            const inputs = getInputs();
+            const name = document.getElementById('projName').value;
+            saveProject(name, inputs);
+        }
+
+        function changeCurrency() {
+            currentCurrency = document.getElementById('currency').value;
+            runAnalysis();
+        }
+
+        function updateDisplayCurrency() {
+            const curr = document.getElementById('displayCurrency').value;
+            document.getElementById('currency').value = curr;
+            changeCurrency();
+        }
+
+        window.onload = init;
     </script>
 </body>
 </html>
