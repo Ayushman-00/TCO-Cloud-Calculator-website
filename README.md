@@ -40,7 +40,7 @@ The tool calculates:
 
 ## 🧮 How It Works
 
-All calculations are performed using **JavaScript in the browser**:
+All calculations are performed using current cost
 
 - On-prem hardware costs are amortized and refreshed based on the refresh cycle.
 - Operating costs are applied annually.
@@ -54,7 +54,7 @@ No data is sent anywhere — everything runs locally in your browser.
 ## 🛠 How to Run
 
 1. Download or clone this repository
-2. Open `index.html` in any modern web browser  
+
    *(Chrome, Edge, Firefox, Safari)*
 
 That’s it.
@@ -64,6 +64,8 @@ No server, no build step, no installation.
 ---
 
 ## 📂 Project Structure
+
+
 
 
 
