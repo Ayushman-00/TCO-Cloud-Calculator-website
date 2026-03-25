@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: calculator
-       image: raymephisto/tco-cloud-calculator:{{ .Values.image.tag }}
+        image: raymephisto/tco-cloud-calculator:{{ .Values.image.tag }}
         ports:
         - containerPort: 80

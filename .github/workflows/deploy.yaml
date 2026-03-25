@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+# Give GitHub Actions permission to commit files
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,4 +28,17 @@ jobs:
           context: .
           push: true
           tags: raymephisto/tco-cloud-calculator:${{ github.sha }}
-        
+
+      # --- THIS IS THE NEW GITOPs STEP ---
+      - name: Update Helm values.yaml
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Replace the old tag with the new GitHub Commit SHA
+          sed -i "s/tag: .*/tag: ${{ github.sha }}/" tco-cloud-calculator-chart/values.yaml
+          
+          # Commit and Push the change back to the repository
+          git add tco-cloud-calculator-chart/values.yaml
+          git commit -m "Update Helm image tag to ${{ github.sha }}"
+          git push
