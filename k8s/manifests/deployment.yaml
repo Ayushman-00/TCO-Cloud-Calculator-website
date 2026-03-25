@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tco-cloud-calculator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tco-cloud-calculator
+  template:
+    metadata:
+      labels:
+        app: tco-cloud-calculator
+    spec:
+      containers:
+      - name: calculator
+        image: raymephisto/tco-cloud-calculator:v1
+        ports:
+        - containerPort: 80
