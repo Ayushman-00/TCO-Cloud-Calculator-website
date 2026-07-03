@@ -1,103 +1,292 @@
-# Cloud TCO Calculator
-Overview
+# ☁️ Cloud TCO Calculator
 
-Cloud TCO Calculator is a browser-based application that estimates the Total Cost of Ownership (TCO) of running workloads on-premises versus major cloud providers. It enables organizations to compare infrastructure costs, operational expenses, migration costs, and long-term financial impact before making cloud adoption decisions.
+A web-based **Cloud Total Cost of Ownership (TCO) Calculator** that helps users estimate and compare the long-term cost of migrating infrastructure from on-premises environments to major cloud providers.
 
-The application performs all cost calculations directly in the browser while using Supabase Authentication for secure user login.
+The application provides an interactive interface for estimating infrastructure costs, storage expenses, migration costs, and operational expenses over multiple years. It also includes user authentication, visualization of results, and deployment support using Docker and Kubernetes.
 
-Features
-Multi-year TCO comparison (1–10 years)
-Compare On-Premises vs Cloud infrastructure
-Support for AWS, Azure and Google Cloud regions
-Infrastructure sizing using predefined instance catalogs
-Storage cost estimation
-Network and data transfer estimation
-Migration complexity modeling
-Currency conversion (USD / INR)
-Interactive cost visualization
-User authentication using Supabase
-Responsive interface
-Docker support
-Kubernetes manifests
-Helm Chart deployment
-GitHub Actions CI/CD pipeline
-Tech Stack
-Category	Technology
-Frontend	HTML, CSS, JavaScript
-Authentication	Supabase
-Charts	Chart.js
-Deployment	Docker
-Container Orchestration	Kubernetes
-Package Manager	Helm
-CI/CD	GitHub Actions
-Project Structure
-.
+---
+
+## 📌 Features
+
+- 🔐 User Authentication using Supabase
+- ☁️ Cloud cost estimation
+- 🖥️ On-Premises vs Cloud comparison
+- 📊 Interactive charts and cost visualization
+- 💾 Storage cost estimation
+- 🌍 Multiple cloud regions support
+- 💱 Currency conversion support
+- 📈 Multi-year TCO calculation
+- 📦 Docker support
+- ☸️ Kubernetes deployment manifests
+- 🚀 Helm Chart deployment
+- 🔄 GitHub Actions CI/CD Workflow
+
+---
+
+# Preview
+
+> Add screenshots here
+
+### Login Page
+
+```
+images/login.png
+```
+
+### Calculator
+
+```
+images/calculator.png
+```
+
+### Results
+
+```
+images/results.png
+```
+
+---
+
+# Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Frontend | HTML5, CSS3, JavaScript |
+| Authentication | Supabase |
+| Charts | Chart.js |
+| Deployment | Docker |
+| Container Orchestration | Kubernetes |
+| Package Manager | Helm |
+| CI/CD | GitHub Actions |
+
+---
+
+# Project Structure
+
+```
+TCO-Cloud-Calculator-website
+│
+├── .github/
+│   └── workflows/
+│
+├── k8s/
+│
+├── tco-cloud-calculator-chart/
+│
 ├── app.js
 ├── data.js
 ├── index.html
 ├── login.html
 ├── style.css
 ├── Dockerfile
-├── k8s/
-├── tco-cloud-calculator-chart/
-└── .github/workflows/
-Architecture
-User
+└── README.md
+```
 
-↓
+---
 
-Login (Supabase)
+# How It Works
 
-↓
+```
+                User
+                  │
+                  ▼
+          Login (Supabase)
+                  │
+                  ▼
+        Cloud TCO Calculator
+                  │
+                  ▼
+      Cost Calculation Engine
+                  │
+                  ▼
+       Generate Cost Analysis
+                  │
+                  ▼
+          Charts & Results
+```
 
-Cloud TCO Calculator
+---
 
-↓
+# Installation
 
-Calculation Engine
+## Clone Repository
 
-↓
-
-Cost Comparison
-
-↓
-
-Charts & Reports
-Running Locally
+```bash
 git clone https://github.com/Ayushman-00/TCO-Cloud-Calculator-website.git
 
 cd TCO-Cloud-Calculator-website
+```
+
+---
+
+## Run Locally
+
+Since this is a frontend application, simply start a local web server.
+
+Python
+
+```bash
+python -m http.server
+```
+
+Node
+
+```bash
+npx serve .
+```
+
+Then open
+
+```
+http://localhost:8000
+```
+
+or
+
+```
+http://localhost:3000
+```
+
+depending on the server.
+
+---
+
+# Docker
+
+Build image
+
+```bash
+docker build -t cloud-tco-calculator .
+```
+
+Run
+
+```bash
+docker run -d -p 8080:80 cloud-tco-calculator
+```
 
 Open
 
-index.html
+```
+http://localhost:8080
+```
 
-or serve using any static server.
+---
 
-Example
+# Kubernetes
 
-python -m http.server
-Docker
-docker build -t tco-calculator .
+Deploy using manifests
 
-docker run -p 8080:80 tco-calculator
-Kubernetes
-kubectl apply -f k8s/manifests/
-Helm
-helm install tco tco-cloud-calculator-chart/
-Current Limitations
-Pricing values are based on static reference datasets and may not always reflect the latest cloud provider pricing.
-This application is intended for estimation purposes and should not be considered a replacement for official cloud pricing calculators.
-Some enterprise pricing scenarios and provider-specific discounts are not currently modeled.
-Future Improvements
-AWS Pricing API integration
-Azure Retail Pricing API
-Google Cloud Billing API
-Scenario comparison
-PDF report export
-Saved calculations
-Cost optimization recommendations
-AI-assisted migration suggestions
-License
+```bash
+kubectl apply -f k8s/
+```
 
-MIT License
+---
+
+# Helm Deployment
+
+Install chart
+
+```bash
+helm install cloud-tco ./tco-cloud-calculator-chart
+```
+
+Upgrade
+
+```bash
+helm upgrade cloud-tco ./tco-cloud-calculator-chart
+```
+
+---
+
+# Cost Parameters Considered
+
+The calculator estimates costs based on:
+
+- Compute Instances
+- Storage
+- Data Transfer
+- Migration Cost
+- Operational Cost
+- Infrastructure Maintenance
+- Cloud Provider Pricing
+- Region Selection
+- Usage Duration
+- Currency Conversion
+
+---
+
+# Supported Cloud Providers
+
+- Amazon Web Services (AWS)
+- Microsoft Azure
+- Google Cloud Platform (GCP)
+
+---
+
+# Current Limitations
+
+- Uses a predefined pricing dataset rather than live cloud pricing APIs.
+- Enterprise discounts and reserved instance pricing are not currently included.
+- Intended for educational and estimation purposes.
+
+---
+
+# Future Enhancements
+
+- AWS Pricing API integration
+- Azure Retail Pricing API
+- Google Cloud Billing API
+- PDF report export
+- CSV export
+- Saved calculations
+- User dashboard
+- Cost optimization recommendations
+- AI-based migration suggestions
+- Dark mode
+- Scenario comparison
+
+---
+
+# Contributing
+
+Contributions are welcome.
+
+1. Fork the repository
+2. Create a feature branch
+
+```bash
+git checkout -b feature-name
+```
+
+3. Commit your changes
+
+```bash
+git commit -m "Added new feature"
+```
+
+4. Push
+
+```bash
+git push origin feature-name
+```
+
+5. Open a Pull Request
+
+---
+
+# License
+
+This project is licensed under the MIT License.
+
+---
+
+# Author
+
+**Ayushman**
+
+GitHub: https://github.com/Ayushman-00
+
+---
+
+## ⭐ If you found this project useful, consider giving it a star!
