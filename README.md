@@ -1,99 +1,103 @@
-# ☁️ Cloud TCO Calculator
+# Cloud TCO Calculator
+Overview
 
-A browser-based **Total Cost of Ownership (TCO) calculator** that compares **on-premises infrastructure** against **cloud hosting** over a multi-year period.
+Cloud TCO Calculator is a browser-based application that estimates the Total Cost of Ownership (TCO) of running workloads on-premises versus major cloud providers. It enables organizations to compare infrastructure costs, operational expenses, migration costs, and long-term financial impact before making cloud adoption decisions.
 
-This project is implemented as a **single self-contained HTML file** (no backend, no frameworks) and runs entirely in the browser.
+The application performs all cost calculations directly in the browser while using Supabase Authentication for secure user login.
 
----
+Features
+Multi-year TCO comparison (1–10 years)
+Compare On-Premises vs Cloud infrastructure
+Support for AWS, Azure and Google Cloud regions
+Infrastructure sizing using predefined instance catalogs
+Storage cost estimation
+Network and data transfer estimation
+Migration complexity modeling
+Currency conversion (USD / INR)
+Interactive cost visualization
+User authentication using Supabase
+Responsive interface
+Docker support
+Kubernetes manifests
+Helm Chart deployment
+GitHub Actions CI/CD pipeline
+Tech Stack
+Category	Technology
+Frontend	HTML, CSS, JavaScript
+Authentication	Supabase
+Charts	Chart.js
+Deployment	Docker
+Container Orchestration	Kubernetes
+Package Manager	Helm
+CI/CD	GitHub Actions
+Project Structure
+.
+├── app.js
+├── data.js
+├── index.html
+├── login.html
+├── style.css
+├── Dockerfile
+├── k8s/
+├── tco-cloud-calculator-chart/
+└── .github/workflows/
+Architecture
+User
 
+↓
 
----
+Login (Supabase)
 
-## 📌 What This Tool Does
+↓
 
-The calculator helps estimate and compare:
+Cloud TCO Calculator
 
-### On-Premises Costs
-- Servers
-- Storage
-- Network equipment
-- Power & cooling
-- IT staff
-- Datacenter space
-- Hardware maintenance
-- Hardware refresh cycles
+↓
 
-### Cloud Costs
-- Compute (VMs, containers, serverless)
-- Storage
-- Network & data transfer
-- Other managed services (databases, AI, monitoring, etc.)
+Calculation Engine
 
-The tool calculates:
-- Total 5–10 year cost
-- Annual cost
-- Cost breakdown
-- Which option is cheaper
-- Savings percentage
+↓
 
----
+Cost Comparison
 
-## 🧮 How It Works
+↓
 
-All calculations are performed using current cost
+Charts & Reports
+Running Locally
+git clone https://github.com/Ayushman-00/TCO-Cloud-Calculator-website.git
 
-- On-prem hardware costs are amortized and refreshed based on the refresh cycle.
-- Operating costs are applied annually.
-- Cloud costs are calculated from monthly spend × 12 × number of years.
-- The cheaper option is selected as the recommended solution.
+cd TCO-Cloud-Calculator-website
 
-No data is sent anywhere — everything runs locally in your browser.
+Open
 
----
+index.html
 
-## 🛠 How to Run
+or serve using any static server.
 
-1. Download or clone this repository
+Example
 
-   *(Chrome, Edge, Firefox, Safari)*
+python -m http.server
+Docker
+docker build -t tco-calculator .
 
-That’s it.
+docker run -p 8080:80 tco-calculator
+Kubernetes
+kubectl apply -f k8s/manifests/
+Helm
+helm install tco tco-cloud-calculator-chart/
+Current Limitations
+Pricing values are based on static reference datasets and may not always reflect the latest cloud provider pricing.
+This application is intended for estimation purposes and should not be considered a replacement for official cloud pricing calculators.
+Some enterprise pricing scenarios and provider-specific discounts are not currently modeled.
+Future Improvements
+AWS Pricing API integration
+Azure Retail Pricing API
+Google Cloud Billing API
+Scenario comparison
+PDF report export
+Saved calculations
+Cost optimization recommendations
+AI-assisted migration suggestions
+License
 
-No server, no build step, no installation.
-
----
-
-## 📂 Project Structure
-
-
-
-
-
----
-
-## 🎯 Intended Use
-
-This tool is useful for:
-- Cloud migration planning
-- Cost modeling
-- Architecture discussions
-- Sales engineering
-- Finance & IT comparisons
-
-It provides **directional cost estimates**, not vendor-specific billing.
-
----
-
-## ⚠️ Disclaimer
-
-All calculations are estimates.  
-Actual costs depend on cloud provider pricing, discounts, contracts, and real-world usage patterns.
-
-This tool is for **planning and comparison**, not accounting.
-
----
-
-## 📜 License
-
-You may use, modify, and share this project freely.
-
+MIT License
